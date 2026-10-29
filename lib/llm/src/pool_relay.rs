@@ -5,6 +5,7 @@
 
 mod actor;
 mod discovery;
+mod global_routers;
 mod host;
 mod identity;
 mod load;
