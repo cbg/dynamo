@@ -1,0 +1,24 @@
+rewritten
+diff --git a/src/benchmarks/toolcall-schema-fuzz/solver.ts b/src/benchmarks/toolcall-schema-fuzz/solver.ts
+index 60afecf..8fd77b9 100644
+--- a/src/benchmarks/toolcall-schema-fuzz/solver.ts
++++ b/src/benchmarks/toolcall-schema-fuzz/solver.ts
+@@ -40,7 +40,18 @@ const UpstreamRejectionSchema = z.object({
+   }),
+ });
+ 
++function isDirectEndpoint(): boolean {
++  const baseUrl = process.env.OPENROUTER_BASE_URL;
++  return baseUrl !== undefined && !baseUrl.includes("openrouter.ai");
++}
++
+ function isUpstreamRejection(text: string): boolean {
++  // A direct serving stack (vLLM, SGLang, Dynamo, ...) answers 400/422 without
++  // the OpenRouter provider envelope; the rejection still belongs to the
++  // serving stack, so score it as request_rejected instead of aborting.
++  if (isDirectEndpoint()) {
++    return true;
++  }
+   const json = Either.try((): unknown => JSON.parse(text));
+   return (
+     Either.isRight(json) &&
