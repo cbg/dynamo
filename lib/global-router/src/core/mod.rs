@@ -131,7 +131,6 @@ pub struct CoreSelector {
     /// Whether requests carry their session to the core, which only keeps
     /// sessions under [`CorePolicy::Affinity`].
     sessions: bool,
-    /// The gRPC transport, when that is how this replica replicates.
     grpc: Option<GrpcTransport>,
 }
 
